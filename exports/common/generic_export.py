@@ -8,23 +8,34 @@ from logger import logged
 
 FieldsType = OrderedDict[str, Union[str, Callable]]
 
+NA = "N/A"
+
 
 def get_row(data, fields: FieldsType):
     row = []
+    row_append = row.append
     for field_getter in fields.values():
         if isinstance(field_getter, str):
-            row.append(attrgetter(field_getter)(data))
+            try:
+                field_value = attrgetter(field_getter)(data)
+            except AttributeError:
+                print(f"Attribute {field_getter} not found")
+                field_value = None
         else:
-            row.append(field_getter(data))
+            field_value = field_getter(data)
+        row_append(field_value or NA)
     return row
 
 
 @logged
 def handle_xlsx(file: StringIO) -> BytesIO:
-    file.seek(0)
     df = pd.read_csv(file)
     file = BytesIO()
-    with pd.ExcelWriter(file, engine="xlsxwriter") as writer:
+    with pd.ExcelWriter(
+        file,
+        engine="xlsxwriter",
+        options={"strings_to_url": False},
+    ) as writer:
         df.to_excel(writer, index=False, encoding="utf-8")
     file.seek(0)
     return file
@@ -43,6 +54,7 @@ def generic_export(
     append_row = rows.append
     [append_row(get_row(data, fields)) for data in datas]
     writer.writerows(rows)
+    file.seek(0)
 
     if as_xlsx:
         return handle_xlsx(file)

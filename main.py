@@ -1,5 +1,6 @@
 from data import generate_users, generate_addresses
 from exports.user import export_users
+from profiler import profile_context
 
 
 def main():
@@ -9,6 +10,8 @@ def main():
     file = export_users()
     with open("users.xlsx", "wb") as f:
         file_content = file.read()
+        if isinstance(file_content, str):
+            file_content = file_content.encode("utf-8")
         f.write(file_content)
 
 

@@ -1,16 +1,15 @@
 [tool.poetry]
 name = "generic-exports"
 version = "0.1.0"
-description = ""
+description = "Project to test and benchmark a generic way to make XLSX/CSV exports."
 authors = ["Antoine Montes <antoine.montes@pickyourskills.com>"]
 
 [tool.poetry.dependencies]
-python = "3.9"
+python = "3.7.12"
 SQLAlchemy = "^1.4.32"
-pandas = "^1.4.1"
 openpyxl = "^3.0.9"
+pandas = "1.2.5"
 XlsxWriter = "^3.0.3"
-numba = "^0.55.1"
 
 [tool.poetry.dev-dependencies]
 black = {version = "^22.1.0", allow-prereleases = true}

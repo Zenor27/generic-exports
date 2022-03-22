@@ -24,7 +24,7 @@ class UserPosition(BaseModel):
 
     id = Column(Integer, primary_key=True)
     name = Column(String)
-    user_id = Column(Integer, ForeignKey("user.id"))
+    user_id = Column(Integer, ForeignKey("user.id"), index=True)
     user = relationship(
         "User", backref=backref("position", uselist=False, lazy="joined")
     )
@@ -36,8 +36,8 @@ class Address(BaseModel):
     id = Column(Integer, primary_key=True)
     name = Column(String)
     country = Column(String)
-    user_id = Column(Integer, ForeignKey("user.id"))
-    user = relationship("User", backref=backref("addresses", lazy="joined"))
+    user_id = Column(Integer, ForeignKey("user.id"), index=True)
+    user = relationship("User", backref=backref("addresses", lazy="select"))
 
 
 engine: Engine = create_engine(
